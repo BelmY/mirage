@@ -52,7 +52,7 @@ class Device:
 		'''
 		self.subscribers.append(subscriber)
 
-	def publish(self,event):
+	def publish(self,event,*args, **kwargs):
 		'''
 		This method allows to publish an event. It may be used to call from the device a method implemented on the corresponding Emitters / Receivers, subscribers by default.
 	
@@ -66,7 +66,7 @@ class Device:
 		'''
 		for subscriber in self.subscribers:
 			if hasattr(subscriber,event) and callable(getattr(subscriber,event)):
-				getattr(subscriber,event)()
+				return getattr(subscriber,event)(*args,**kwargs)
 
 	def hasCapabilities(self, *capability):
 		'''
