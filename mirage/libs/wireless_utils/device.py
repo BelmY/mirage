@@ -5,6 +5,7 @@ class Device:
 	'''
 	This class is used to communicate with a specific hardware component.
 	Every class communicating with a given hardware component must inherits from this class, and implements the following methods :
+
 	  * ``init()`` : this method initializes the communication with the hardware component
 	  * ``isUp()`` : this method allows to check if the initialization was successful and if the device is usable
 	  * ``send(packet)`` : this method allows to send data (as a raw representation, e.g. bytes array or scapy frame)
