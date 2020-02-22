@@ -161,7 +161,7 @@ class BLEConnect(BLEPacket):
 		self.name = "BLE - Connect Packet"
 
 	def toString(self):
-		return "<< "+self.name+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" | type="+self.type+" | initiatorType="+self.initiatorType+" >>"
+		return "<< "+self.name+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" | type="+self.type+" | initiatorType="+self.initiatorType+" >>"
 
 class BLEConnectResponse(BLEPacket):
 	'''
@@ -192,7 +192,7 @@ class BLEConnectResponse(BLEPacket):
 		self.name = "BLE - Connect Response Packet"
 
 	def toString(self):
-		return "<< "+self.name+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" | type="+self.type+" | role="+self.role+" | success="+("OK" if self.success else "NOK")+" >>"
+		return "<< "+self.name+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" | type="+self.type+" | role="+self.role+" | success="+("OK" if self.success else "NOK")+" >>"
 
 class BLEDisconnect(BLEPacket):
 	'''
@@ -263,7 +263,7 @@ class BLEAdvertisement(BLEPacket):
 		return data
 
 	def toString(self):
-		return "<< "+self.name+" | type="+self.type+" | addr="+self.addr+" | data="+self.getRawDatas().hex()+" >>"
+		return "<< "+self.name+" | type="+self.type+" | addr="+self.addr+" | data="+self.getRawDatas().hex()+" >>"
 
 class BLEAdvInd(BLEAdvertisement):
 	'''
@@ -311,7 +311,7 @@ class BLEAdvDirectInd(BLEAdvertisement):
 		self.dstAddrType = dstAddrType
 
 	def toString(self):
-		return "<< "+self.name+" | type="+self.type+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" >>"
+		return "<< "+self.name+" | type="+self.type+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" >>"
 
 class BLEAdvNonConnInd(BLEAdvertisement):
 	'''
@@ -326,7 +326,7 @@ class BLEAdvNonConnInd(BLEAdvertisement):
 		super().__init__(type="ADV_NONCONN_IND")
 
 	def toString(self):
-		return "<< "+self.name+" | type="+self.type+" >>"
+		return "<< "+self.name+" | type="+self.type+" >>"
 
 class BLEAdvScanInd(BLEAdvertisement):
 	'''
@@ -341,7 +341,7 @@ class BLEAdvScanInd(BLEAdvertisement):
 		super().__init__(type="ADV_SCAN_IND")
 
 	def toString(self):
-		return "<< "+self.name+" | type="+self.type+" >>"
+		return "<< "+self.name+" | type="+self.type+" >>"
 
 class BLEScanRequest(BLEAdvertisement):
 	'''
@@ -369,7 +369,7 @@ class BLEScanRequest(BLEAdvertisement):
 		self.dstAddrType = dstAddrType
 
 	def toString(self):
-		return "<< "+self.name+" | type="+self.type+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" >>"
+		return "<< "+self.name+" | type="+self.type+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" >>"
 	
 class BLEScanResponse(BLEAdvertisement):
 	'''
@@ -468,7 +468,7 @@ class BLEConnectRequest(BLEAdvertisement):
 		self.data = data
 
 	def toString(self):
-		return "<< "+self.name+" | type="+self.type+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" | accessAddress="+"0x{:08x}".format(self.accessAddress)+"| crcInit="+"0x{:03x}".format(self.crcInit)+"| channelMap="+"0x{:10x}".format(self.channelMap)+"| hopInterval="+str(self.hopInterval)+"| hopIncrement="+str(self.hopIncrement)+" >>"	
+		return "<< "+self.name+" | type="+self.type+" | srcAddr="+self.srcAddr+" | dstAddr="+self.dstAddr+" | accessAddress="+"0x{:08x}".format(self.accessAddress)+"| crcInit="+"0x{:03x}".format(self.crcInit)+"| channelMap="+"0x{:10x}".format(self.channelMap)+"| hopInterval="+str(self.hopInterval)+"| hopIncrement="+str(self.hopIncrement)+" >>"	
 
 class BLEFindInformationRequest(BLEPacket):
 	'''
@@ -561,7 +561,49 @@ class BLEFindInformationResponse(BLEPacket):
 		self.attributes = pairs
 
 	def toString(self):
-		return "<< "+self.name+" | format="+hex(self.format)+" | data="+self.data.hex()+" >>"
+		return "<< "+self.name+" | format="+hex(self.format)+" | data="+self.data.hex()+" >>"
+
+class BLEFindByTypeValueRequest(BLEPacket):
+	'''
+	Mirage Bluetooth Low Energy Packet - Find By Type Value Request
+
+	:param startHandle: lowest ATT handle included in the request
+	:type startHandle: int
+	:param endHandle: highest ATT handle included in the request
+	:type endHandle: int
+	:param uuid: 2 octet UUID to find
+	:type uuid: int
+	:param data: Attribute value to find
+	:type data: bytes
+	:param connectionHandle: connection handle associated to the connection
+	:type connectionHandle: int
+
+	'''
+
+	def __init__(self, startHandle=0x0000, endHandle=0xFFFF, uuid=0, data=b"", connectionHandle=-1):
+		super().__init__()
+		self.startHandle = startHandle
+		self.endHandle = endHandle
+		self.uuid = uuid
+		self.data = data
+		self.connectionHandle = connectionHandle
+		self.name = "BLE - Find Type By Value Request"
+
+class BLEFindByTypeValueResponse(BLEPacket):
+	'''
+	Mirage Bluetooth Low Energy Packet - Find By Type Value Response
+
+	:param handles: list indicating the handles contained in the Information Response
+	:type handles: list
+	:param connectionHandle: connection handle associated to the connection
+	:type connectionHandle: int
+
+	'''
+	def __init__(self, handles=[], connectionHandle = -1):
+		super().__init__()
+		self.handles = handles
+		self.connectionHandle = connectionHandle
+		self.name = "BLE - Find By Type Value Response Packet"
 
 class BLEReadByGroupTypeRequest(BLEPacket):
 	'''
@@ -659,7 +701,7 @@ class BLEReadByGroupTypeResponse(BLEPacket):
 		self.attributes = pairs
 
 	def toString(self):
-		return "<< "+self.name+" | length="+str(self.length)+" | data="+self.data.hex()+" >>"
+		return "<< "+self.name+" | length="+str(self.length)+" | data="+self.data.hex()+" >>"
 
 class BLEReadByTypeRequest(BLEPacket):
 	'''
@@ -774,7 +816,7 @@ class BLEErrorResponse(BLEPacket):
 		self.name = "BLE - Error Response Packet"
 
 	def toString(self):
-		return "<< "+self.name+" | req="+hex(self.request)+" | handle="+hex(self.handle)+" | ecode="+hex(self.ecode)+" >>"
+		return "<< "+self.name+" | req="+hex(self.request)+" | handle="+hex(self.handle)+" | ecode="+hex(self.ecode)+" >>"
 
 class BLEWriteRequest(BLEPacket):
 	'''
