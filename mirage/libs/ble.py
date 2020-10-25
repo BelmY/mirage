@@ -835,7 +835,7 @@ class BLEReceiver(wireless.Receiver):
 		new = BLEPacket()
 		new.packet = packet
 		if "hci" in self.interface or "adb" in self.interface:
-			#packet.show()
+			packet.show()
 
 			if packet.type == TYPE_ACL_DATA:
 				if ATT_Exchange_MTU_Request in packet:
@@ -855,9 +855,14 @@ class BLEReceiver(wireless.Receiver):
 						mtu = packet[ATT_Exchange_MTU_Response].mtu,
 						connectionHandle = packet.handle
 						)
-				elif ATT_Read_Response in packet :
+				elif ATT_Read_Response in packet:
 					return BLEReadResponse(
 						value = packet[ATT_Read_Response].value,
+						connectionHandle = packet.handle
+						)
+				elif packet[ATT_Hdr].opcode == 0xb:
+					return BLEReadResponse(
+						value = b"",
 						connectionHandle = packet.handle
 						)
 				elif ATT_Read_Request in packet:
@@ -1233,6 +1238,10 @@ class BLEReceiver(wireless.Receiver):
 							new = BLEReadResponse(
 								value = packet[ATT_Read_Response].value
 								)
+						elif packet[ATT_Hdr].opcode == 0xb:
+							new = BLEReadResponse(
+								value = b""
+								)
 						elif ATT_Read_Request in packet:
 							new = BLEReadRequest(
 								handle = packet[ATT_Read_Request].gatt_handle
@@ -1445,3 +1454,4 @@ class BLEReceiver(wireless.Receiver):
 
 WirelessModule.registerEmitter("ble",BLEEmitter)
 WirelessModule.registerReceiver("ble",BLEReceiver)
+
